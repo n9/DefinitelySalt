@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace DefinitelySalt
 {
-    public delegate string DoTInterpolateFunc(object value);
+    public delegate string DoTInterpolateFunc(object value, string param);
     public delegate string DoTTemplate(object context, DoTInterpolateFunc interpolateFunc = null);
 
     [Imported]
