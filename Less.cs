@@ -11,30 +11,42 @@ namespace DefinitelySalt
     {
         [ScriptName("filename")]
         public string FileName;
+
+        public string CurrentDirectory;
     }
 
     [Imported]
     [Serializable]
-    public class LessEnv
+    public class LessParseEnvOptions
     {
         public string[] Paths;
         public int? Optimization;
         public string[] Files;
         public JsDictionary<string, string> Contents;
         public JsDictionary<string, int> ContentsIgnoredChars;
+        [ScriptName("filename")]
+        public string FileName;
+    }
 
+    [Imported]
+    [ScriptNamespace("less.tree")]
+    [ScriptName("parseEnv")]
+    public class LessParseEnv : LessParseEnvOptions
+    {
+        public LessFileInfo CurrentFileInfo;
+        public bool? DumpFileNumbers;
+        public bool? ProcessImports;
+        public bool? StrictImports;
+        public bool? Compress;
+        public bool? JavascriptEnabled;
+        public Func<string, bool> IsPathRelative;
+        public bool? IeCompat;
+        public bool? Silent;
+        public int? NumPrecision;
+        public int? TabLevel;
 
-        //public LessFileInfo CurrentFileInfo;
-        //public bool? DumpFileNumbers;
-        //public bool? ProcessImports;
-        //public bool? StrictImports;
-        //public bool? Compress;
-        //public bool? JavascriptEnabled;
-        //public Func<string, bool> IsPathRelative;
-        //public bool? IeCompat;
-        //public bool? Silent;
-        //public int? NumPrecision;
-        //public int? TabLevel;
+        public LessParseEnv() { }
+        public LessParseEnv(LessParseEnvOptions options) { }
     }
 
 
@@ -44,7 +56,7 @@ namespace DefinitelySalt
     public static class Less
     {
         [ScriptName("Parser")]
-        public static extern ILessParser Parser(LessEnv env = null);
+        public static extern ILessParser Parser(LessParseEnvOptions env = null);
 
         public static LessParserImporter Importer 
         {
@@ -59,8 +71,7 @@ namespace DefinitelySalt
 
     public delegate void LessFileParsed(LessError error, ILessResult result, string fullPath);
 
-    public delegate void LessParserImporter(string path, LessFileInfo currentFileInfo, LessFileParsed callback, LessEnv env);
-
+    public delegate void LessParserImporter(string path, LessFileInfo currentFileInfo, LessFileParsed callback, LessParseEnv env);
 
     [Imported]
     [Serializable]
