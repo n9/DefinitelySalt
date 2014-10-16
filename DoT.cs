@@ -15,7 +15,8 @@ namespace DefinitelySalt
     {
         public static DotTemplateSettings TemplateSettings;
 
-        public static extern DoTTemplate Compile(string source);
+        public static extern DoTTemplate Compile(string source, DotTemplateSettings settings = null);
+        public static extern string Template(string source, DotTemplateSettings settings = null);
 
         public static extern Func<object, string> EncodeHTMLSource();
     }
