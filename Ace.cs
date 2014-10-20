@@ -22,6 +22,15 @@ namespace DefinitelySalt
     {
         public AceEditSession GetSession() { return null; }
         public void SetSession(AceEditSession session) { }
+        public void SetOptions(AceOptions session) { }
+    }
+
+    [Imported]
+    [Serializable]
+    public class AceOptions
+    {
+        public TypeOption<int, double> MinLines;
+        public TypeOption<int, double> MaxLines;
     }
 
     [Imported]

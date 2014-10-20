@@ -11,8 +11,13 @@ namespace DefinitelySalt
     {
         [ScriptName("filename")]
         public string FileName;
-
+        public bool RelativeUrls;
+        public string RootPath;
         public string CurrentDirectory;
+        public string EntryPath;
+        [ScriptName("rootFilename")]
+        public string RootFileName;
+        public bool Reference;  
     }
 
     [Imported]
@@ -65,13 +70,25 @@ namespace DefinitelySalt
             [InlineCode("{$DefinitelySalt.Less}.Parser.importer = {value}")]
             set { }
         }
+
+        public static LessParserFileLoader FileLoader
+        {
+            [InlineCode("{$DefinitelySalt.Less}.Parser.fileLoader")]
+            get { return null; }
+            [InlineCode("{$DefinitelySalt.Less}.Parser.fileLoader = {value}")]
+            set { }
+        }
     }
 
     public delegate void LessParserCallback(LessError error, ILessResult result);
 
     public delegate void LessFileParsed(LessError error, ILessResult result, string fullPath);
 
+    public delegate void LessFileLoaded(LessError error, string contents, string fullPath, LessFileInfo newFileInfo);
+
     public delegate void LessParserImporter(string path, LessFileInfo currentFileInfo, LessFileParsed callback, LessParseEnv env);
+
+    public delegate void LessParserFileLoader(string path, LessFileInfo currentFileInfo, LessFileLoaded callback, LessParseEnv env);
 
     [Imported]
     [Serializable]
