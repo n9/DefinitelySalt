@@ -25,15 +25,15 @@ namespace DefinitelySalt
         [ScriptSkip]
         public static implicit operator Action<ServerRequest, ServerResponse>(Connect connect) { return null; } 
     }
-
+    
+    [Imported]
     public static class ConnectEx
     {
-        public static void Apply(this Connect connect, ServerRequest request, ServerResponse response)
-        {
-            ((Action<ServerRequest, ServerResponse>)connect)(request, response);
-        }
+        [InlineCode("{connect}({request}, {response})")]
+        public static void Apply(this Connect connect, ServerRequest request, ServerResponse response) { }
     }
 
+    [Imported]
     [Serializable]
     public class ConnectStaticOptions
     {

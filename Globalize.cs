@@ -6,6 +6,7 @@ using System.Html;
 
 namespace DefinitelySalt
 {
+    [Imported]
     [Serializable]
     public class GlobalizeCulture
     {
@@ -20,11 +21,13 @@ namespace DefinitelySalt
 
     }
 
+    [Imported]
     [Serializable]
     public class GlobalizeNumberFormat
     {
     }
 
+    [Imported]
     [Serializable]
     public class GlobalizeCalendar
     {

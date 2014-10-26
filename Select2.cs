@@ -6,6 +6,7 @@ using System.Text;
 
 namespace DefinitelySalt
 {
+    [Imported]
     [NamedValues]
     public enum Select2Width
     {
@@ -39,7 +40,7 @@ namespace DefinitelySalt
         public object Context;
         public void Callback(Select2Result<T> data) { }
     }
-
+    
     [Serializable]
     [Imported]
     public class Select2AjaxBase<TData>

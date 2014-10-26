@@ -7,6 +7,7 @@ using System.Html;
 
 namespace DefinitelySalt
 {
+    [Imported]
     public static class Bootstrap
     {
 
@@ -108,6 +109,7 @@ namespace DefinitelySalt
         public string Tooltip;
     }
 
+    
     public delegate string BootstrapDatePickerEventFormat(int? index = null, string format = null);
 
     [Imported]
