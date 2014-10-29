@@ -1,6 +1,7 @@
 ﻿using jQueryApi;
 using System;
 using System.Collections.Generic;
+using System.Html;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -8,29 +9,25 @@ namespace DefinitelySalt
 {
     [Serializable]
     [Imported]
-    public class SelectizeItem
+    public class SelectizeItem<T>
     {
         public string Text;
         public string Value;
         [ScriptName("$sort")]
         public string Sort;
-    }
-
-    [Serializable]
-    [Imported]
-    public class SelectizeOptions : SelectizeOptions<SelectizeItem>
-    {
-
+        public T Item;
     }
     
     [Imported]
     public interface ISelectize<T>
     {
         Func<T, double> GetScoreFunction(string seach);
+        void SetValue(string value);
+        string GetValue();
     }
 
     [BindThisToFirstParameter]
-    public delegate Func<T, double> SelectizeLoad<T>(ISelectize<T> selectize, string search, Action<T[]> callback);
+    public delegate void SelectizeLoad<T>(ISelectize<T> selectize, string search, Action<SelectizeItem<T>[]> callback);
 
     [BindThisToFirstParameter]
     public delegate Func<T, double> SelectizeScore<T>(ISelectize<T> selectize, string search); 
@@ -45,18 +42,12 @@ namespace DefinitelySalt
         public string ValueField;
         public string LabelField;
         public string SearchField;
-        public T[] Options;
-        public TypeOption<bool, Func<string, T>> Create;
-    }
-
-    [Serializable]
-    [Imported]
-    public class SelectizeRender : SelectizeRender<SelectizeItem>
-    {
+        public SelectizeItem<T>[] Options;
+        public TypeOption<bool, Func<string, SelectizeItem<T>>> Create;
     }
 
     [BindThisToFirstParameter]
-    public delegate string SelectizeRenderItem<T>(ISelectize<T> selectize, T item, Func<string, string> escape); 
+    public delegate string SelectizeRenderItem<T>(ISelectize<T> selectize, SelectizeItem<T> item, Func<string, string> escape); 
 
     [Serializable]
     [Imported]
@@ -72,9 +63,19 @@ namespace DefinitelySalt
         public static jQueryObject Selectize(this jQueryObject jQuery) { return null; }
 
         [InstanceMethodOnFirstArgument]
-        public static jQueryObject Selectize(this jQueryObject jQuery, SelectizeOptions options) { return null; }
+        public static jQueryObject Selectize(this jQueryObject jQuery, SelectizeOptions<object> options) { return null; }
 
         [InstanceMethodOnFirstArgument]
         public static jQueryObject Selectize<T>(this jQueryObject jQuery, SelectizeOptions<T> options) { return null; }
+    }
+
+    [Imported]
+    public static class SelectizeEx
+    {
+        [InlineCode("{element}.selectize")]
+        public extern static ISelectize<T> GetSelectize<T>(this Element element);
+
+        [InlineCode("{jQ}.selectize[{index}]")]
+        public extern static ISelectize<T> GetSelectize<T>(this jQueryObject jQ, int index = 0);
     }
 }
