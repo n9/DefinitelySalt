@@ -132,4 +132,48 @@ namespace DefinitelySalt
         public static readonly jQueryEventName<BootstrapDatePickerEventHandlerWithContext> ChangeYear = "changeYear";
         public static readonly jQueryEventName<BootstrapDatePickerEventHandlerWithContext> ChangeMonth = "changeMonth";
     }
+
+    [Imported]
+    public interface IBootstrapNotify
+    {
+        void Show();
+        void Hide();
+    }
+
+    [Imported]
+    [Serializable]
+    public class BootstrapNotifyOptions
+    {
+        public string Type;
+        public bool? Closeable;
+        public string Transition;
+        public BootstrapNotifyFadeOutOptions FadeOut;
+        public string Message;
+        public Action OnClose;
+        public Action OnClosed;
+
+        public static BootstrapNotifyOptions Defaults 
+        { 
+            [InlineCode("$.fn.notify.defaults")]
+            get { return null; }
+
+            [InlineCode("$.fn.notify.defaults = {value}")]
+            set { }
+        }
+    }
+
+    [Imported]
+    [Serializable]
+    public class BootstrapNotifyFadeOutOptions
+    {
+        public bool? Enabled;
+        public int? Delay;
+    }
+
+    [Imported]
+    public static class BootstrapNotifyEx
+    {
+        [InstanceMethodOnFirstArgument]
+        public static extern IBootstrapNotify Notify(this jQueryObject jq, BootstrapNotifyOptions options);
+    }
 }
