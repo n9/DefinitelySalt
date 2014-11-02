@@ -14,7 +14,7 @@ namespace DefinitelySalt
         public string Text;
         public string Value;
         [ScriptName("$sort")]
-        public string Sort;
+        public double Sort;
         public T Item;
     }
     
@@ -24,6 +24,14 @@ namespace DefinitelySalt
         Func<T, double> GetScoreFunction(string seach);
         void SetValue(string value);
         string GetValue();
+
+        void AddOption(SelectizeItem<T> data);
+        void UpdateOptions(string value, SelectizeItem<T> data);
+        void RemoveOption(string value);
+        void ClearOptions();
+        jQueryObject GetOption();
+        jQueryObject GetAdjacentOption(string value, int direction);
+        void RefreshOptions(bool triggerDropdown);
     }
 
     [BindThisToFirstParameter]
@@ -42,6 +50,8 @@ namespace DefinitelySalt
         public string ValueField;
         public string LabelField;
         public string SearchField;
+        public int? MaxItems;
+        public bool? AllowEmptyOption;
         public SelectizeItem<T>[] Options;
         public TypeOption<bool, Func<string, SelectizeItem<T>>> Create;
     }
@@ -75,7 +85,7 @@ namespace DefinitelySalt
         [InlineCode("{element}.selectize")]
         public extern static ISelectize<T> GetSelectize<T>(this Element element);
 
-        [InlineCode("{jQ}.selectize[{index}]")]
+        [InlineCode("{jQ}[{index}].selectize")]
         public extern static ISelectize<T> GetSelectize<T>(this jQueryObject jQ, int index = 0);
     }
 }
