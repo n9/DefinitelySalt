@@ -7,7 +7,9 @@ namespace DefinitelySalt
 {
     public delegate string DoTInterpolateFunc(object value, string param);
     public delegate bool DoTConditionFunc(object value);
-    public delegate string DoTTemplate(object context, DoTInterpolateFunc interpolateFunc = null, DoTConditionFunc conditionFunc = null);
+    public delegate string DoTBlockFunc(string name, object jsArguments, JsDictionary<string, Function> templateArguments);
+
+    public delegate string DoTTemplate(object context, DoTInterpolateFunc interpolateFunc, DoTConditionFunc conditionFunc, DoTBlockFunc blockFunc);
 
     [Imported]
     [IgnoreNamespace]
@@ -19,13 +21,12 @@ namespace DefinitelySalt
         public static extern DoTTemplate Compile(string source, DotTemplateSettings settings = null);
         public static extern string Template(string source, DotTemplateSettings settings = null);
 
-        public static extern Func<object, string> EncodeHTMLSource();
+        public static extern string EncodeHTML(object value);
     }
 
     [Imported]
     [Serializable]
     public class DotTemplateSettings
     {
-        public DoTInterpolateFunc InterpolateFunc;
     }
 }
