@@ -22,6 +22,7 @@ namespace DefinitelySalt
         public static extern string Template(string source, DotTemplateSettings settings = null);
 
         public static extern string EncodeHTML(object value);
+        public static extern string BlockSplatter(string name, object jsArguments, JsDictionary<string, Function> templateArguments, DoTBlockFunc blockFunction);
     }
 
     [Imported]
