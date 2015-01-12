@@ -52,8 +52,13 @@ namespace DefinitelySalt
         public string SearchField;
         public int? MaxItems;
         public bool? AllowEmptyOption;
+        public string Placeholder;
+        public string DropdownParent;
+        public bool? Preload;
+        public bool? Persist;
         public SelectizeItem<T>[] Options;
         public TypeOption<bool, Func<string, SelectizeItem<T>>> Create;
+        public TypeOption<string[], JsDictionary<string, JsDictionary<string, object>>> Plugins;
     }
 
     [BindThisToFirstParameter]
@@ -88,4 +93,5 @@ namespace DefinitelySalt
         [InlineCode("{jQ}[{index}].selectize")]
         public extern static ISelectize<T> GetSelectize<T>(this jQueryObject jQ, int index = 0);
     }
+
 }
