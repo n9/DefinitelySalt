@@ -12,7 +12,7 @@ namespace DefinitelySalt
     public class TypeaheadOptions
     {
         public bool Autoselect;
-        public bool Highlight;
+        public TypeOption<bool, Func<string, string[]>> Highlight;
         public bool Hint = true;
         public int MinLength = 1;
     }
