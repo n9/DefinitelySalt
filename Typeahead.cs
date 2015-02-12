@@ -7,12 +7,14 @@ using System.Text;
 
 namespace DefinitelySalt
 {
+    public delegate string[] TypeaheadHighlightFunc(string query, string[] suggestions);
+
     [Serializable]
     [Imported]
     public class TypeaheadOptions
     {
         public bool Autoselect;
-        public TypeOption<bool, Func<string, string[]>> Highlight;
+        public TypeOption<bool, TypeaheadHighlightFunc> Highlight;
         public bool Hint = true;
         public int MinLength = 1;
     }
