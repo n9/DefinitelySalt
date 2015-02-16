@@ -17,6 +17,7 @@ namespace DefinitelySalt
         public TypeOption<bool, TypeaheadHighlightFunc> Highlight;
         public bool Hint = true;
         public int MinLength = 1;
+        public bool QueryWhenOpened;
     }
 
     [Serializable]
