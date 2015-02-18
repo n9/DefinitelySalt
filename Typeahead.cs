@@ -64,13 +64,13 @@ namespace DefinitelySalt
         public TypeaheadTemplates<T> Templates { get; set; }
     }
 
-    public static class Typeahead2Events
+    public static class TypeaheadEvents
     {
         public static readonly jQueryEventName Opened = "typeahead:opened";
         public static readonly jQueryEventName Closed = "typeahead:closed";
     }
 
-    public static class Typeahead2Events<T>
+    public static class TypeaheadEvents<T>
     {
         public static readonly jQueryEventName<TypeaheadEventHandlerWithContext<T>> CursorChanged = "typeahead:cursorchanged";
         public static readonly jQueryEventName<TypeaheadEventHandlerWithContext<T>> Selected = "typeahead:selected";
