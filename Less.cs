@@ -21,102 +21,192 @@ namespace DefinitelySalt
     }
 
     [Imported]
-    [Serializable]
-    public class LessParseEnvOptions
+    public enum LessLogLevel
     {
-        public string[] Paths;
-        public int? Optimization;
-        public string[] Files;
-        public JsDictionary<string, string> Contents;
-        public JsDictionary<string, int> ContentsIgnoredChars;
-        [ScriptName("filename")]
-        public string FileName;
+        None = 0,
+        Error = 1,
+        Warn = 2,
+        Info = 3,
+        Debug = 4
     }
 
     [Imported]
-    [ScriptNamespace("less.tree")]
-    [ScriptName("parseEnv")]
-    public class LessParseEnv : LessParseEnvOptions
+    public interface ILessLogger
     {
-        public LessFileInfo CurrentFileInfo;
+        void Debug(string message);
+        void Info(string message);
+        void Warn(string message);
+        void Error(string message);
+    }
+
+    [Imported]
+    [Serializable]
+    public class LessOptions
+    {
+        [ScriptName("filename")]
+        public string FileName;
+        public bool RelativeUrls;
+        public string RootPath;
+
+
         public bool? DumpFileNumbers;
         public bool? ProcessImports;
         public bool? StrictImports;
         public bool? Compress;
-        public bool? JavascriptEnabled;
-        public Func<string, bool> IsPathRelative;
         public bool? IeCompat;
-        public bool? Silent;
-        public int? NumPrecision;
-        public int? TabLevel;
 
-        public LessParseEnv() { }
-        public LessParseEnv(LessParseEnvOptions options) { }
+        public bool? JavascriptEnabled;
+        
+        // ...
+
+        public LessFileInfo RootFileInfo;
+        public LessSourceMapOptions SourceMap;
+        public List<ILessPlugin> Plugins;
+
+        public JsDictionary<string, string> GlobalVars;
+        public JsDictionary<string, string> ModifyVars;
+        public string Banner;
     }
 
+    [Imported]
+    [Serializable]
+    public class LessSourceMapOptions
+    {
+        public bool SourceMapFileInline;
+        // ...
+    }
+
+
+    [Imported]
+    public interface ILessContext
+    {
+        ILessPluginManager PluginManager { get; }
+
+        //    public int? NumPrecision;
+        //    public int? TabLevel;
+    }
+
+    [Imported]
+    public interface ILessEnvironment
+    {
+        ILessFileManager GetFileManager(string fileName, string currentDirectory, LessOptions options, ILessEnvironment environment, bool isSync);
+        void AddFileManager(ILessFileManager fileManager);
+        void ClearFileManagers();
+    }
+
+    [Imported]
+    [Serializable]
+    public class LessLoadedFile
+    {
+        [ScriptName("filename")]
+        public string FileName;
+
+        public string Contents;
+
+        public LessWebInfo WebInfo;
+    }
+
+    [Imported]
+    [Serializable]
+    public class LessWebInfo
+    {
+        public object Remaining;
+        public DateTime LastModified;
+        public bool Local;
+    }
 
     [Imported]
     [IgnoreNamespace]
     [ScriptName("less")]
     public static class Less
     {
-        [ScriptName("Parser")]
-        public static extern ILessParser Parser(LessParseEnvOptions env = null);
-
-        public static LessParserImporter Importer 
-        {
-            [InlineCode("{$DefinitelySalt.Less}.Parser.importer")]
-            get { return null; }
-            [InlineCode("{$DefinitelySalt.Less}.Parser.importer = {value}")]
-            set { }
-        }
-
-        public static LessParserFileLoader FileLoader
-        {
-            [InlineCode("{$DefinitelySalt.Less}.Parser.fileLoader")]
-            get { return null; }
-            [InlineCode("{$DefinitelySalt.Less}.Parser.fileLoader = {value}")]
-            set { }
-        }
+        public static extern void Render(string input, LessOptions options, LessRenderCallback callback);
     }
 
-    public delegate void LessParserCallback(LessError error, ILessResult result);
+    public delegate void LessRenderCallback(LessError error, LessRenderOutput output);
 
-    public delegate void LessFileParsed(LessError error, ILessResult result, string fullPath);
-
-    public delegate void LessFileLoaded(LessError error, string contents, string fullPath, LessFileInfo newFileInfo);
-
-    public delegate void LessParserImporter(string path, LessFileInfo currentFileInfo, LessFileParsed callback, LessParseEnv env);
-
-    public delegate void LessParserFileLoader(string path, LessFileInfo currentFileInfo, LessFileLoaded callback, LessParseEnv env);
+    public delegate void LessLoadFileCallback(LessError error, LessLoadedFile loadedFile);
 
     [Imported]
     [Serializable]
-    public class LessError
+    public class LessRenderOutput
     {
+        public string Css;
+        public string Map;
+        public string[] Imports; 
+    }
+
+    [Imported]
+    [ScriptNamespace("less")]
+    [ScriptName("LessError")]
+    public class LessError : Error
+    {
+        public LessError(TypeOption<LessError, Error> error, ILessImportManager importManager = null, string currentFileName = null) { }
+
         public string Type;
-        public string Name;
-        public string Message;
         [ScriptName("filename")]
         public string FileName;
-        public object Index; // TODO
+        public int? Index;
         public int? Line;
         public int CallLine;
         public string CallExtract;
-        public object Stack; // TODO
         public int Column;
         public string[] Extract;
     }
 
     [Imported]
-    public interface ILessResult
+    public interface ILess
     {
-        string ToCSS();
+
     }
 
     [Imported]
-    public interface ILessParser
+    public interface ILessPluginManager
     {
-        void Parse(string source, LessParserCallback callback, JsDictionary<string, object> additionalData);
+        void AddFileManager(ILessFileManager manager);
+    }
+
+    [Imported]
+    public interface ILessPlugin
+    {
+        void Install(ILess less, ILessPluginManager manager);
+    }
+
+    [Imported]
+    public interface ILessImportManager
+    {
+        JsDictionary<string, string> Contents { get; }
+    }
+
+    [Imported]
+    public interface ILessFileManager
+    {
+        void LoadFile(string path, string currentDirectory, ILessContext context, ILessEnvironment environment, LessLoadFileCallback callback);
+        bool AlwaysMakePathsAbsolute();
+        string Join(string basePath, string laterPath);
+        bool Supports(string fileName, string currentDirectory, LessOptions /*ILessContext?*/ options, ILessEnvironment environment);
+        void ClearFileCache();
+    }
+
+    [Imported]
+    [ScriptNamespace("less")]
+    [ScriptName("AbstractFileManager")]
+    public abstract class LessAbstractFileManager : ILessFileManager
+    {
+        extern public virtual string GetPath(string fileName);
+        extern public virtual string TryAppendLessExtension(string path);
+        extern public virtual bool SupportSync();
+        extern public virtual bool AlwaysMakePathsAbsolute();
+        extern public virtual bool IsPathAbsolute(string fileName);
+        extern public virtual string Join(string basePath, string laterPath);
+        extern public virtual string PathDiff(string url, string baseUrl);
+
+        extern protected virtual object /*TODO*/ ExtractUrlParts(string url, string baseUrl);
+
+        public abstract void LoadFile(string path, string currentDirectory, ILessContext context, ILessEnvironment environment, LessLoadFileCallback callback);
+
+        public abstract bool Supports(string fileName, string currentDirectory, LessOptions options, ILessEnvironment environment);
+
+        public abstract void ClearFileCache();
     }
 }
