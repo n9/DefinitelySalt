@@ -66,6 +66,40 @@ namespace DefinitelySalt
     }
 
     [Imported]
+    public static partial class D3Static
+    {
+        [InstanceMethodOnFirstArgument]
+        public extern static TS Call<TS, TI>(this TS selection, Action<TI> action)
+            where TS : TI
+            where TI : ID3Selection;
+
+        [InstanceMethodOnFirstArgument]
+        public extern static TS Call<TS, TI, T1>(this TS selection, Action<TI, T1> action, T1 a1)
+            where TS : TI
+            where TI : ID3Selection;
+
+        // TODO ...
+
+        [InstanceMethodOnFirstArgument]
+        public extern static TS Call<TS>(this TS selection, ID3Function action)
+            where TS : ID3Selection;
+
+        [InstanceMethodOnFirstArgument]
+        public extern static TS Text<TS>(this TS selection, string value)
+            where TS : ID3Selection;
+
+        [InstanceMethodOnFirstArgument]
+        public extern static ID3Selection<TD> Text<TD>(this ID3Selection<TD> selection, Func<TD, string> value);
+
+        [InstanceMethodOnFirstArgument]
+        public extern static ID3UpdateSelection<TD> Text<TD>(this ID3UpdateSelection<TD> selection, Func<TD, string> value);
+
+        [InstanceMethodOnFirstArgument]
+        public extern static TS Text<TS, TD>(this TS selection, D3Source<TD, string> value)
+            where TS : ID3Selection<TD>;
+    }
+
+    [Imported]
     public interface ID3CreatorSeletion<TD>
     {
         ID3Selection<TD> Append(D3Source<TD, string> tagName);
@@ -115,14 +149,22 @@ namespace DefinitelySalt
         ID3Selection<TD> Style<T>(string name, D3Source<TD, T> value);
         ID3Selection<TD> Style(D3Source<TD, JsDictionary<string, object>> value);
 
+        [ScriptName("property")]
+        object GetProperty(string name);
+        [ScriptName("property")]
+        T GetProperty<T>(string name);
+        ID3Selection<TD> Property(string name, D3Source<TD, object> value);
+        ID3Selection<TD> Property<T>(string name, D3Source<TD, T> value);
+        ID3Selection<TD> Property(D3Source<TD, JsDictionary<string, object>> value);
+
         [ScriptName("text")]
         string GetText();
-        ID3Selection<TD> Text(D3Source<TD, string> value);
 
         [ScriptName("html")]
         string GetHtml();
         ID3Selection<TD> Html(D3Source<TD, string> value);
 
+        ID3UpdateSelection<TR[]> Data<TR>(TR[] data);
         ID3UpdateSelection<TR> Data<TR>(D3Source<TD, TR> data);
         ID3UpdateSelection<TR> Data<TR, TI>(D3Source<TD, TI> data, Func<TI, TR> selector);
 
@@ -148,10 +190,6 @@ namespace DefinitelySalt
         XmlElement this[int index] { get; }
 
         ID3Selection<TD> Each(D3ElementAction<TD> action);
-        ID3Selection<TD> Call(Action<ID3Selection<TD>> action);
-
-        ID3Selection<TD> Call<T1>(Action<ID3Selection<TD>, T1> action, T1 a1);
-        // TODO ...
 
         [ScriptName("empty")]
         bool IsEmpty();
@@ -262,13 +300,19 @@ namespace DefinitelySalt
     }
 
     [Imported]
-    public abstract class D3SvgAxis<TD>
+    public interface ID3Function
+    {
+        string Apply(ID3Selection data);
+    }
+
+    [Imported]
+    public abstract class D3SvgAxis<TD> : ID3Function
     {
         [InlineCode("{this}({data})", GeneratedMethodName = "apply")]
         public string Apply(ID3Selection data) { return null; }
 
         [ScriptSkip]
-        public static implicit operator Action<ID3Selection>(D3SvgAxis<TD> area) { return null; }
+        public static implicit operator Action<ID3Selection<TD>>(D3SvgAxis<TD> area) { return null; }
 
         public D3SvgAxis<TD> Scale(ID3Scale<TD> scale) { return null; }
         
