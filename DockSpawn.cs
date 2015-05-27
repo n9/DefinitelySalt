@@ -22,11 +22,11 @@ namespace DefinitelySalt
         [IntrinsicProperty]
         public extern Element Element { get; }
 
-        public extern IDockNode DockLeft(IDockNode container, IDockNode child, double percentage);
-        public extern IDockNode DockRight(IDockNode container, IDockNode child, double percentage);
-        public extern IDockNode DockUp(IDockNode container, IDockNode child, double percentage);
-        public extern IDockNode DockDown(IDockNode container, IDockNode child, double percentage);
-        public extern IDockNode dockFill(IDockNode container, IDockNode child);
+        public extern IDockNode DockLeft(IDockNode reference, PanelContainer panel, double ratio);
+        public extern IDockNode DockRight(IDockNode reference, PanelContainer panel, double ratio);
+        public extern IDockNode DockUp(IDockNode reference, PanelContainer panel, double ratio);
+        public extern IDockNode DockDown(IDockNode reference, PanelContainer panel, double ratio);
+        public extern IDockNode DockFill(IDockNode reference, PanelContainer panel);
     }
 
     [Imported]
