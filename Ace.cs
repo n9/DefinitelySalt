@@ -29,8 +29,12 @@ namespace DefinitelySalt
     [Serializable]
     public class AceOptions
     {
-        public TypeOption<int, double> MinLines;
-        public TypeOption<int, double> MaxLines;
+        // https://github.com/ajaxorg/ace/wiki/Configuring-Ace
+        public TypeOption<int?, double?> MinLines;
+        public TypeOption<int?, double?> MaxLines;
+        public bool? AutoScrollEditorIntoView;
+        public bool? HScrollBarAlwaysVisible;
+
     }
 
     [Imported]
