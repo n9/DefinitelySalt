@@ -70,6 +70,9 @@ namespace DefinitelySalt
     [ScriptNamespace("dockspawn")]
     public class PanelContainer
     {
-        public extern PanelContainer(Element element, DockManager manager);
+        public extern PanelContainer(Element element, DockManager manager, string title = null);
+
+        public string Title;
+        public string IconName;
     }
 }
