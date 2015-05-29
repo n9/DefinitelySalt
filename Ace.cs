@@ -20,9 +20,11 @@ namespace DefinitelySalt
     [ScriptName("Editor")]
     public class AceEditor
     {
-        public AceEditSession GetSession() { return null; }
-        public void SetSession(AceEditSession session) { }
-        public void SetOptions(AceOptions session) { }
+        public extern AceEditSession GetSession();
+        public extern void SetSession(AceEditSession session);
+        public extern void SetOptions(AceOptions session);
+        public extern void Resize(bool force = false);
+
     }
 
     [Imported]

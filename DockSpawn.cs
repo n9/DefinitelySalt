@@ -27,6 +27,19 @@ namespace DefinitelySalt
         public extern IDockNode DockUp(IDockNode reference, PanelContainer panel, double ratio);
         public extern IDockNode DockDown(IDockNode reference, PanelContainer panel, double ratio);
         public extern IDockNode DockFill(IDockNode reference, PanelContainer panel);
+
+        public extern void AddLayoutListener(IDockLayoutListener listener);
+        public extern void RemoveLayoutListener(IDockLayoutListener listener);
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface IDockLayoutListener
+    {
+        void OnSuspendLayout(DockManager sender);
+        void OnResumeLayout(DockManager sender);
+        void OnDock(DockManager sender, IDockNode node);
+        void OnUnDock(DockManager sender, IDockNode node);
     }
 
     [Imported]
