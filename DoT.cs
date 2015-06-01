@@ -5,13 +5,26 @@ using System.Runtime.CompilerServices;
 
 namespace DefinitelySalt
 {
-    public delegate string DoTInterpolateFunc(object value, string param);
-    public delegate bool DoTConditionFunc(object value);
-    public delegate string DoTLoopFunc(object value, Func<object, int, string> itemWriter, Func<string> separatorWriter);
-    public delegate string DoTBlockFunc(string name, object jsArguments, JsDictionary<string, Func<object, DoTBlockFunc, DoTBlockMeta, string>> templateArguments);
-    public delegate object DoTBlockMeta(string name, object jsArguments);
+    [Imported]
+    public interface IDoTOp
+    {
+        [ScriptName("i")]
+        string Interpolate(object value, string param);
+        
+        [ScriptName("c")]
+        bool Condition(object value);
+        
+        [ScriptName("l")]
+        string Loop(object value, Func<object, int, string> itemWriter, Func<string> separatorWriter);
 
-    public delegate string DoTTemplate(object context, DoTInterpolateFunc interpolateFunc, DoTConditionFunc conditionFunc, DoTLoopFunc loopFunc, DoTBlockFunc blockFunc, DoTBlockMeta blockMeta);
+        [ScriptName("b")]
+        string Block(string name, IDoTOp op, object jsArguments, JsDictionary<string, Func<object, IDoTOp, string>> templateArguments);
+
+        [ScriptName("bm")]
+        object BlockMeta(string name, object jsArguments);
+    }
+
+    public delegate string DoTTemplate(object data, IDoTOp op);
 
     [Imported]
     [IgnoreNamespace]
@@ -25,7 +38,9 @@ namespace DefinitelySalt
 
         public static extern string EncodeHTML(object value);
         public static extern string Loop(object value, Func<object, int, string> itemWriter, Func<string> separatorWriter);
-        public static extern string BlockSplatter(string name, object jsArguments, JsDictionary<string, Func<object, DoTBlockFunc, DoTBlockMeta, string>> templateArguments, DoTBlockFunc blockFunction);
+        public static extern string BlockSplatter(string name, IDoTOp op, object jsArguments, 
+            JsDictionary<string, Func<object, IDoTOp, string>> templateArguments, 
+            Func<string, IDoTOp, object, JsDictionary<string, Func<object, IDoTOp, string>>, string> blockFunction);
     }
 
     [Imported]
