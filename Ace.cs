@@ -11,8 +11,8 @@ namespace DefinitelySalt
     [ScriptName("ace")]
     public static partial class Ace
     {
-        public static AceEditor Edit(Element element) { return null; }
-        public static AceEditSession CreateEditSession(TypeOption<AceDocument, string> text, TypeOption<AceTextMode, string> mode) { return null; }
+        public extern static AceEditor Edit(Element element);
+        public extern static AceEditSession CreateEditSession(TypeOption<AceDocument, string> text, TypeOption<AceTextMode, string> mode);
     }
 
     [Imported]
@@ -37,6 +37,10 @@ namespace DefinitelySalt
         public bool? AutoScrollEditorIntoView;
         public bool? HScrollBarAlwaysVisible;
 
+        // ace.require("ace/ext/language_tools");
+        public bool? EnableBasicAutocompletion;
+        public bool? EnableLiveAutocompletion;
+        public bool? EnableSnippets;
     }
 
     [Imported]
@@ -45,11 +49,12 @@ namespace DefinitelySalt
     public class AceEditSession
     {
         // no undo manager set!
-        public AceEditSession(TypeOption<AceDocument, string> text, TypeOption<AceTextMode, string> mode) { }
+        public extern AceEditSession(TypeOption<AceDocument, string> text, TypeOption<AceTextMode, string> mode);
 
-        public AceDocument GetDocument() { return null; }
-        public string GetValue() { return null; }
-        public void SetValue(string text) { }
+        public extern AceDocument GetDocument();
+        public extern string GetValue();
+        public extern void SetValue(string text);
+        public extern void SetMode(string name);
     }
 
     [Imported]
