@@ -13,6 +13,9 @@ namespace DefinitelySalt
     {
         public extern static AceEditor Edit(Element element);
         public extern static AceEditSession CreateEditSession(TypeOption<AceDocument, string> text, TypeOption<AceTextMode, string> mode);
+
+        [IntrinsicProperty]
+        public extern static IAceConfig Config { get; }
     }
 
     [Imported]
@@ -62,8 +65,8 @@ namespace DefinitelySalt
     [ScriptName("Document")]
     public class AceDocument
     {
-        public string GetValue() { return null; }
-        public void SetValue(string text) { }
+        public extern string GetValue();
+        public extern void SetValue(string text);
     }
 
     [Imported]
@@ -73,4 +76,10 @@ namespace DefinitelySalt
     {
         
     }   
+
+    [Imported]
+    public interface IAceConfig
+    {
+        void LoadModule(string moduleName, Action<object> onLoad);
+    }
 }
