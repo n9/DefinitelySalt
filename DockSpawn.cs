@@ -30,6 +30,9 @@ namespace DefinitelySalt
 
         public extern void AddLayoutListener(IDockLayoutListener listener);
         public extern void RemoveLayoutListener(IDockLayoutListener listener);
+
+        public extern string SaveState();
+        public extern void LoadState(string json);
     }
 
     [Imported]
@@ -72,7 +75,13 @@ namespace DefinitelySalt
     {
         public extern PanelContainer(Element element, DockManager manager, string title = null);
 
-        public string Title;
-        public string IconName;
+        [IntrinsicProperty]
+        public extern string Title { get; }
+
+        [IntrinsicProperty]
+        public extern string IconName { get; }
+
+        public extern void SetTitle(string title);
+        public extern void SetIconName(string iconName);
     }
 }

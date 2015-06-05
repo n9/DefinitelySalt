@@ -27,7 +27,7 @@ namespace DefinitelySalt
         public extern void SetSession(AceEditSession session);
         public extern void SetOptions(AceOptions session);
         public extern void Resize(bool force = false);
-
+        public extern void On(string eventName, Action handler);
     }
 
     [Imported]
