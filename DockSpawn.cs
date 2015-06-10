@@ -76,12 +76,8 @@ namespace DefinitelySalt
         public extern PanelContainer(Element element, DockManager manager, string title = null);
 
         [IntrinsicProperty]
-        public extern string Title { get; }
+        public extern string Title { get; [InlineCode("{this}.setTitle({value})")] set; }
 
-        [IntrinsicProperty]
-        public extern string IconName { get; }
-
-        public extern void SetTitle(string title);
-        public extern void SetIconName(string iconName);
+        public Action OnDestroyed;
     }
 }
