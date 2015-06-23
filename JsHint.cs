@@ -65,6 +65,7 @@ namespace DefinitelySalt
     }
 
     [Imported]
+    [Serializable]
     public interface IJsHintToken
     {
         [ScriptName("raw_text")]
@@ -77,6 +78,7 @@ namespace DefinitelySalt
     }
 
     [Imported]
+    [Serializable]
     public interface IJsHintData
     {
         JsHintError[] Errors { get; }

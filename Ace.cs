@@ -20,14 +20,40 @@ namespace DefinitelySalt
 
     [Imported]
     [ScriptNamespace("ace")]
+    [ScriptName("EventEmitter")]
+    public class AceEventEmitter
+    {
+        public extern void Once(string eventName, Action handler);
+        public extern void On(string eventName, Action handler);
+        public extern void Off(string eventName, Action handler);
+    }
+
+
+    [Imported]
+    [ScriptNamespace("ace")]
     [ScriptName("Editor")]
-    public class AceEditor
+    public class AceEditor : AceEventEmitter
     {
         public extern AceEditSession GetSession();
         public extern void SetSession(AceEditSession session);
         public extern void SetOptions(AceOptions session);
         public extern void Resize(bool force = false);
-        public extern void On(string eventName, Action handler);
+
+        public event Action Changed
+        {
+            [InlineCode("{this}.on('change', {value})")]
+            add { }
+            [InlineCode("{this}.off('change', {value})")]
+            remove { }
+        }
+
+        public event Action Input
+        {
+            [InlineCode("{this}.on('input', {value})")]
+            add { }
+            [InlineCode("{this}.off('input', {value})")]
+            remove { }
+        }
     }
 
     [Imported]
@@ -39,6 +65,8 @@ namespace DefinitelySalt
         public TypeOption<int?, double?> MaxLines;
         public bool? AutoScrollEditorIntoView;
         public bool? HScrollBarAlwaysVisible;
+        public bool? UseWorker;
+        public bool? ReadOnly;
 
         // ace.require("ace/ext/language_tools");
         public bool? EnableBasicAutocompletion;
@@ -49,7 +77,7 @@ namespace DefinitelySalt
     [Imported]
     [ScriptNamespace("ace")]
     [ScriptName("EditSession")]
-    public class AceEditSession
+    public class AceEditSession : AceEventEmitter
     {
         // no undo manager set!
         public extern AceEditSession(TypeOption<AceDocument, string> text, TypeOption<AceTextMode, string> mode);
@@ -58,15 +86,36 @@ namespace DefinitelySalt
         public extern string GetValue();
         public extern void SetValue(string text);
         public extern void SetMode(string name);
+
+        public extern void SetAnnotations(AceAnnotation[] annotations);
+
+        public event Action Changed
+        {
+            [InlineCode("{this}.on('change', {value})")]
+            add { }
+            [InlineCode("{this}.off('change', {value})")]
+            remove { }
+        }
     }
 
     [Imported]
     [ScriptNamespace("ace")]
     [ScriptName("Document")]
-    public class AceDocument
+    public class AceDocument : AceEventEmitter
     {
+        public extern AceDocument(string text);
+        public extern AceDocument(string[] lines);
+
         public extern string GetValue();
         public extern void SetValue(string text);
+
+        public event Action Changed
+        {
+            [InlineCode("{this}.on('change', {value})")]
+            add { }
+            [InlineCode("{this}.off('change', {value})")]
+            remove { }
+        }
     }
 
     [Imported]
@@ -76,6 +125,23 @@ namespace DefinitelySalt
     {
         
     }   
+
+    [Imported]
+    [NamedValues]
+    public enum AceAnnotationType
+    {
+        Error, Warning, Info
+    }
+
+    [Imported]
+    [Serializable]
+    public class AceAnnotation
+    {
+        public int Row;
+        public int Column;
+        public string Text;
+        public AceAnnotationType Type;
+    }
 
     [Imported]
     public interface IAceConfig
