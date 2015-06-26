@@ -15,16 +15,19 @@ namespace DefinitelySalt
         bool Condition(object value);
         
         [ScriptName("l")]
-        string Loop(object value, Func<object, int, string> itemWriter, Func<string> separatorWriter);
+        string Loop(object value, Func<IDoTOp, object, int, object[], string> itemWriter, Func<IDoTOp, string> separatorWriter);
 
         [ScriptName("b")]
-        string Block(string name, IDoTOp op, object jsArguments, JsDictionary<string, Func<object, IDoTOp, string>> templateArguments);
+        string Block(string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
 
         [ScriptName("bm")]
         object BlockMeta(string name, object jsArguments);
     }
 
-    public delegate string DoTTemplate(object data, IDoTOp op);
+    [BindThisToFirstParameter]
+    public delegate string DoTBlockFunc(IDoTOp op, string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
+
+    public delegate string DoTTemplate(IDoTOp op, object data);
 
     [Imported]
     [IgnoreNamespace]
@@ -37,10 +40,14 @@ namespace DefinitelySalt
         public static extern string Template(string source, DotTemplateSettings settings = null);
 
         public static extern string EncodeHTML(object value);
-        public static extern string Loop(object value, Func<object, int, string> itemWriter, Func<string> separatorWriter);
-        public static extern string BlockSplatter(string name, IDoTOp op, object jsArguments, 
-            JsDictionary<string, Func<object, IDoTOp, string>> templateArguments, 
-            Func<string, IDoTOp, object, JsDictionary<string, Func<object, IDoTOp, string>>, string> blockFunction);
+
+        [InlineCode("{$DefinitelySalt.DoT}.loop.call({op}, {value}, {itemWriter}, {separatorWriter})")]
+        public static extern string Loop(IDoTOp op, object value, Func<IDoTOp, object, int, object[], string> itemWriter, Func<IDoTOp, string> separatorWriter);
+        
+        [InlineCode("{$DefinitelySalt.DoT}.blockSplatter.call({op}, {name}, {jsArguments}, {templateArguments}, {blockFunction})")]
+        public static extern string BlockSplatter(IDoTOp op, string name, object jsArguments,
+            JsDictionary<string, DoTTemplate> templateArguments,
+            DoTBlockFunc blockFunction);
     }
 
     [Imported]
