@@ -15,7 +15,7 @@ namespace DefinitelySalt
         bool Condition(object value);
         
         [ScriptName("l")]
-        string Loop(object value, Func<IDoTOp, object, int, object[], string> itemWriter, Func<IDoTOp, string> separatorWriter);
+        string Loop(object value, DoTItemWriter itemWriter, DoTSeparatorWriter separatorWriter);
 
         [ScriptName("b")]
         string Block(string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
@@ -28,6 +28,10 @@ namespace DefinitelySalt
     public delegate string DoTBlockFunc(IDoTOp op, string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
 
     public delegate string DoTTemplate(IDoTOp op, object data);
+
+    public delegate string DoTItemWriter(IDoTOp op, object item, int index, object[] collection);
+
+    public delegate string DoTSeparatorWriter(IDoTOp op);
 
     [Imported]
     [IgnoreNamespace]
@@ -42,7 +46,7 @@ namespace DefinitelySalt
         public static extern string EncodeHTML(object value);
 
         [InlineCode("{$DefinitelySalt.DoT}.loop.call({op}, {value}, {itemWriter}, {separatorWriter})")]
-        public static extern string Loop(IDoTOp op, object value, Func<IDoTOp, object, int, object[], string> itemWriter, Func<IDoTOp, string> separatorWriter);
+        public static extern string Loop(IDoTOp op, object value, DoTItemWriter itemWriter, DoTSeparatorWriter separatorWriter);
         
         [InlineCode("{$DefinitelySalt.DoT}.blockSplatter.call({op}, {name}, {jsArguments}, {templateArguments}, {blockFunction})")]
         public static extern string BlockSplatter(IDoTOp op, string name, object jsArguments,
