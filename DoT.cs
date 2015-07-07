@@ -23,15 +23,16 @@ namespace DefinitelySalt
         public extern virtual string Block(string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
 
         [ScriptName("ib")]
-        public extern virtual Func<object, Func<DoTContext, JsDictionary<string, DoTTemplate>>> InlineBlock(JsDictionary<string, DoTTemplate> defaultTemplateArguments);
+        public extern virtual Func<object, Func<DoTContext, JsDictionary<string, DoTTemplate>, object>> InlineBlock(JsDictionary<string, DoTTemplate> defaultTemplateArguments);
 
         [ScriptName("bm")]
         public extern virtual object BlockMeta(string name, object jsArguments);
 
+        public extern virtual object WrapInlineBlock(string result);
         public extern virtual string UnknownBlock(string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
         public extern virtual object UnknownBlockMeta(string name, object jsArguments);
-        public extern virtual DoTContext MayDerive(JsDictionary<string, DoTTemplate> blocks);
 
+        public extern virtual DoTContext MayDerive(JsDictionary<string, DoTTemplate> blocks);
         public extern virtual DoTContext FullDerive();
     }
 
@@ -55,16 +56,9 @@ namespace DefinitelySalt
         public static extern string Template(string source, DotTemplateSettings settings = null);
 
         public static extern string EncodeHTML(object value);
-        public static extern Function ConstructorFromInstance(object instance);
 
         [InlineCode("{$DefinitelySalt.DoT}.loop.call({op}, {value}, {itemWriter}, {separatorWriter})")]
         public static extern string Loop(DoTContext op, object value, DoTItemWriter itemWriter, DoTSeparatorWriter separatorWriter);
-
-        [InlineCode("{$DefinitelySalt.DoT}.blockSplatter.call({op}, {name}, {jsArguments}, {templateArguments}, {blockFunction})")]
-        public static extern string BlockSplatter(DoTContext op, string name, object jsArguments,
-            JsDictionary<string, DoTTemplate> templateArguments,
-            DoTBlockFunc blockFunction);
-
     }
 
     [Imported]
