@@ -15,55 +15,63 @@ namespace DefinitelySalt
         public extern void Initialize();
         public extern void Resize(int width, int height);
 
-        [IntrinsicProperty]
-        public extern IDockModel Model { get; }
+        public readonly DockModel Model;
+        public readonly Element Element;
 
-        [IntrinsicProperty]
-        public extern Element Element { get; }
-
-        public extern IDockNode DockLeft(IDockNode reference, PanelContainer<T> panel, double ratio);
-        public extern IDockNode DockRight(IDockNode reference, PanelContainer<T> panel, double ratio);
-        public extern IDockNode DockUp(IDockNode reference, PanelContainer<T> panel, double ratio);
-        public extern IDockNode DockDown(IDockNode reference, PanelContainer<T> panel, double ratio);
-        public extern IDockNode DockFill(IDockNode reference, PanelContainer<T> panel);
+        public extern DockNode DockLeft(DockNode reference, IDockContainer panel, double ratio);
+        public extern DockNode DockRight(DockNode reference, IDockContainer panel, double ratio);
+        public extern DockNode DockUp(DockNode reference, IDockContainer panel, double ratio);
+        public extern DockNode DockDown(DockNode reference, IDockContainer panel, double ratio);
+        public extern DockNode DockFill(DockNode reference, IDockContainer panel);
 
         public extern void AddLayoutListener(IDockLayoutListener<T> listener);
         public extern void RemoveLayoutListener(IDockLayoutListener<T> listener);
 
         public extern string SaveState();
         public extern void LoadState(string json);
+
+        [ScriptName("_findNodeFromContainer")]
+        public extern DockNode FindNodeFromContainer(IDockContainer container);
     }
 
     [Imported]
-    [IgnoreNamespace]
+    [ScriptNamespace("dockspawn")]
     public interface IDockLayoutListener<T>
     {
         void OnSuspendLayout(DockManager<T> sender);
         void OnResumeLayout(DockManager<T> sender);
-        void OnDock(DockManager<T> sender, IDockNode node);
-        void OnUnDock(DockManager<T> sender, IDockNode node);
+        void OnDock(DockManager<T> sender, DockNode node);
+        void OnUnDock(DockManager<T> sender, DockNode node);
     }
 
     [Imported]
-    [IgnoreNamespace]
-    [Serializable]
-    public interface IDockModel
+    [ScriptNamespace("dockspawn")]
+    public class DockModel
     {
-        IDockNode RootNode { get; }
-        IDockNode DocumentNode { get; }
+        public readonly DockNode RootNode;
+        public readonly DockNode DocumentNode;
     }
 
     [Imported]
-    [IgnoreNamespace]
-    [Serializable]
-    public interface IDockNode
+    [ScriptNamespace("dockspawn")]
+    public class DockNode
+    {
+        public extern DockNode(IDockContainer container);
+
+        public readonly IDockContainer Container;
+        public readonly List<DockNode> Children;
+    }
+
+    [Imported]
+    [ScriptNamespace("dockspawn")]
+    public interface IDockContainer
     {
 
     }
 
     [Imported]
     [ScriptNamespace("dockspawn")]
-    public class PanelContainer<T>
+    public class PanelContainer<T> : IDockContainer
     {
         public extern PanelContainer(T contentData, DockManager<T> manager, string title = null);
 
