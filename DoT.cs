@@ -10,6 +10,10 @@ namespace DefinitelySalt
     [ScriptName("Context")]
     public class DoTContext
     {
+        public readonly JsDictionary<string, DoTTemplate> Blocks;
+
+        public extern DoTContext(JsDictionary<string, DoTTemplate> blocks = null);
+
         [ScriptName("i")]
         public extern virtual string Interpolate(object value, string param);
         
