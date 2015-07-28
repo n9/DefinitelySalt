@@ -10,9 +10,9 @@ namespace DefinitelySalt
     [ScriptName("Context")]
     public class DoTContext
     {
-        public readonly JsDictionary<string, DoTTemplate> Blocks;
+        public readonly JsDictionary<string, DoTBlock> Blocks;
 
-        public extern DoTContext(JsDictionary<string, DoTTemplate> blocks = null);
+        public extern DoTContext(JsDictionary<string, DoTBlock> blocks = null);
 
         [ScriptName("i")]
         public extern virtual string Interpolate(object value, string param);
@@ -32,11 +32,14 @@ namespace DefinitelySalt
         [ScriptName("bm")]
         public extern virtual object BlockMeta(string name, object jsArguments);
 
+        [ScriptName("bd")]
+        public extern virtual object BlockDef(string name, JsDictionary<string, DoTTemplate> templateArguments);
+
         public extern virtual object WrapInlineBlock(string result);
         public extern virtual string UnknownBlock(string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
         public extern virtual object UnknownBlockMeta(string name, object jsArguments);
 
-        public extern virtual DoTContext MayDerive(JsDictionary<string, DoTTemplate> blocks);
+        public extern virtual DoTContext Clone(JsDictionary<string, DoTTemplate> newBlocks);
         public extern virtual DoTContext FullDerive();
     }
 
@@ -44,6 +47,8 @@ namespace DefinitelySalt
     public delegate string DoTBlockFunc(DoTContext c, string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
 
     public delegate string DoTTemplate(DoTContext c, object data);
+
+    public delegate string DoTBlock(DoTContext c, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
 
     public delegate string DoTItemWriter(DoTContext c, object item, int index, object[] collection);
 
