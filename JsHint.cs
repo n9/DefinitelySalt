@@ -9,6 +9,11 @@ namespace DefinitelySalt
     [Serializable]
     public class JsHintOptions
     {
+        [ScriptName("eqeqeq")]
+        public bool? EqEqEeq;
+        public bool? Freeze;
+        public bool? Expr;
+        
         // TODO
     }
 

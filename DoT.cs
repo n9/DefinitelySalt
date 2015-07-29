@@ -18,7 +18,10 @@ namespace DefinitelySalt
         public extern virtual string Interpolate(object value, string param);
         
         [ScriptName("c")]
-        public extern virtual bool Condition(object value);
+        public extern virtual bool Condition(object value, Action<object> action);
+
+        [ScriptName("ic")]
+        public extern virtual bool InterpolateCondition(object value);
         
         [ScriptName("l")]
         public extern virtual string Loop(object value, DoTItemWriter itemWriter, DoTSeparatorWriter separatorWriter);
