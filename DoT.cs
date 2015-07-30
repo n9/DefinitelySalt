@@ -62,12 +62,13 @@ namespace DefinitelySalt
     [ScriptName("doT")]
     public static class DoT
     {
-        public static DotTemplateSettings TemplateSettings;
+        public static DoTTemplateSettings TemplateSettings;
 
-        public static extern DoTTemplate Compile(string source, DotTemplateSettings settings = null);
-        public static extern string Template(string source, DotTemplateSettings settings = null);
+        public static extern DoTTemplate Compile(string source, DoTTemplateSettings settings = null);
+        public static extern string Template(string source, DoTTemplateSettings settings = null);
 
         public static extern string EncodeHTML(object value);
+        public static extern string ExtractText(string html);
 
         [InlineCode("{$DefinitelySalt.DoT}.loop.call({op}, {value}, {itemWriter}, {separatorWriter})")]
         public static extern string Loop(DoTContext op, object value, DoTItemWriter itemWriter, DoTSeparatorWriter separatorWriter);
@@ -75,7 +76,17 @@ namespace DefinitelySalt
 
     [Imported]
     [Serializable]
-    public class DotTemplateSettings
+    public class DoTTemplateSettings
     {
+    }
+
+    [Imported]
+    [ScriptNamespace("doT")]
+    [ScriptName("Literal")]
+    public class DoTLiteral 
+    {
+        public string Html;
+
+        public extern DoTLiteral(string html);
     }
 }
