@@ -11,8 +11,9 @@ namespace DefinitelySalt
     public class DoTContext
     {
         public readonly JsDictionary<string, DoTBlock> Blocks;
+        public readonly JsDictionary<string, DoTBlock> CallBlocks;
 
-        public extern DoTContext(JsDictionary<string, DoTBlock> blocks = null);
+        public extern DoTContext(JsDictionary<string, DoTBlock> blocks = null, JsDictionary<string, DoTBlock> callBlocks = null);
 
         [ScriptName("i")]
         public extern virtual string Interpolate(object value, string param);
@@ -27,35 +28,42 @@ namespace DefinitelySalt
         public extern virtual string Loop(object value, DoTItemWriter itemWriter, DoTSeparatorWriter separatorWriter);
 
         [ScriptName("b")]
-        public extern virtual string Block(string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
+        public extern virtual string Block(JsDictionary<string, DoTBlock> closureArgs, string name, object jsArguments, JsDictionary<string, DoTBlockArg> templateArguments);
 
         [ScriptName("ib")]
-        public extern virtual Func<object, Func<DoTContext, JsDictionary<string, DoTTemplate>, object>> InlineBlock(JsDictionary<string, DoTTemplate> defaultTemplateArguments);
+        public extern virtual Func<object, DoTInlineBlockFunc> InlineBlock(JsDictionary<string, DoTBlockArg> defaultTemplateArguments);
 
         [ScriptName("bm")]
-        public extern virtual object BlockMeta(string name, object jsArguments);
+        public extern virtual DoTBlock BlockMeta(JsDictionary<string, DoTBlock> closureArgs, string name, object jsArguments);
 
         [ScriptName("bd")]
-        public extern virtual object BlockDef(string name, JsDictionary<string, DoTTemplate> templateArguments);
+        public extern virtual object BlockDef(string name, JsDictionary<string, DoTBlockArg> templateArguments);
 
         public extern virtual object WrapInlineBlock(string result);
-        public extern virtual string UnknownBlock(string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
-        public extern virtual object UnknownBlockMeta(string name, object jsArguments);
+        public extern virtual string UnknownBlock(string name, object jsArguments, JsDictionary<string, DoTBlockArg> templateArguments);
+        public extern virtual DoTBlock UnknownBlockMeta(string name, object jsArguments);
 
-        public extern virtual DoTContext Clone(JsDictionary<string, DoTTemplate> newBlocks);
+        public extern virtual DoTContext Clone(JsDictionary<string, DoTBlockArg> callBlocks);
         public extern virtual DoTContext FullDerive();
     }
 
+    public delegate object DoTInlineBlockFunc(DoTContext c, JsDictionary<string, DoTBlockArg> templateArguments);
+
     [BindThisToFirstParameter]
-    public delegate string DoTBlockFunc(DoTContext c, string name, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
+    public delegate string DoTBlockFunc(DoTContext c, string name, object jsArguments, JsDictionary<string, DoTBlockArg> templateArguments);
 
-    public delegate string DoTTemplate(DoTContext c, object data);
+    public delegate string DoTBlockArg(DoTContext c, object data);
 
-    public delegate string DoTBlock(DoTContext c, object jsArguments, JsDictionary<string, DoTTemplate> templateArguments);
+    public delegate string DoTBlock(DoTContext c, object jsArguments, JsDictionary<string, DoTBlockArg> templateArguments);
 
     public delegate string DoTItemWriter(DoTContext c, object item, int index, object[] collection);
 
     public delegate string DoTSeparatorWriter(DoTContext c);
+
+    public delegate DoTBlock DoTDeclaration(JsDictionary<string, DoTBlockArg> blockDefinition);
+
+    [ExpandParams]
+    public delegate DoTBlock DoTTemplate(DoTDeclaration declaration, params object[] functionArgs);
 
     [Imported]
     [IgnoreNamespace]
@@ -64,11 +72,13 @@ namespace DefinitelySalt
     {
         public static DoTTemplateSettings TemplateSettings;
 
-        public static extern DoTTemplate Compile(string source, DoTTemplateSettings settings = null);
+        public static extern DoTBlock Compile(string source, DoTTemplateSettings settings = null);
         public static extern string Template(string source, DoTTemplateSettings settings = null);
 
         public static extern string EncodeHTML(object value);
         public static extern string ExtractText(string html);
+
+        public static DoTDeclaration Declaration;
 
         [InlineCode("{$DefinitelySalt.DoT}.loop.call({op}, {value}, {itemWriter}, {separatorWriter})")]
         public static extern string Loop(DoTContext op, object value, DoTItemWriter itemWriter, DoTSeparatorWriter separatorWriter);
