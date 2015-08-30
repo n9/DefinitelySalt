@@ -13,7 +13,7 @@ namespace DefinitelySalt
     [ScriptName("")]
     public static class SocketIo
     {
-        public static ISocketIoManager Listen(Server server) { return null; }
+        public extern static ISocketIoManager Listen(Server server);
     }
 
     [Imported]
@@ -83,7 +83,20 @@ namespace DefinitelySalt
     [ScriptName("io")]
     public static class SocketIoClient
     {
-        public static ISocketIoClientSocket Connect(string url) { return null; }
+        public extern static ISocketIoClientSocket Connect(string url, SocketIoClientOptions options = null);
+
+        [InlineCode("global.io = require('socket.io-client')")]
+        public extern static void NodeInit();
+
+        [InlineCode("global.io = require('socket.io/node_modules/socket.io-client')")]
+        public extern static void NodeInitFromServer();
+    }
+
+    [Imported]
+    [Serializable]
+    public class SocketIoClientOptions
+    {
+        public bool Reconnect;
     }
 
     [Imported]
