@@ -28,6 +28,16 @@ namespace DefinitelySalt
     public interface ISocketIoEmitter
     {
         void Emit(string eventName, object data);
+
+        void On(string eventName, Delegate handler);
+        void On(string eventName, Action<object> handler);
+
+        void Once(string eventName, Delegate handler);
+        void Once(string eventName, Action<object> handler);
+
+        void Off(string eventName);
+        void Off(string eventName, Delegate handler);
+        void Off(string eventName, Action<object> handler);
     }
 
     [Imported]
@@ -51,14 +61,6 @@ namespace DefinitelySalt
     [Imported]
     public interface ISocketIoSocket : ISocketIoEmitter
     {
-        void On(string eventName, Delegate handler);
-        void On(string eventName, Action<object> handler);
-        
-        void Once(string eventName, Delegate handler);
-        void Once(string eventName, Action<object> handler);
-
-        void RemoveAllListeners(string eventName);
-
         [InlineCode("{this}.on('disconnect', {handler})", GeneratedMethodName = "on")]
         void OnDisconnect(Action handler);
 
@@ -96,7 +98,8 @@ namespace DefinitelySalt
     [Serializable]
     public class SocketIoClientOptions
     {
-        public bool Reconnect;
+        public bool? Reconnect;
+        public int? Timeout;
     }
 
     [Imported]
