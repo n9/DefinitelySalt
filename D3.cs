@@ -64,14 +64,27 @@ namespace DefinitelySalt
         public static extern TO Max<TI, TO>(TI[] array, Func<TI, TO> accessor);
         public static extern TO Max<TI, TO>(TI[] array, Func<TI, int, TO> accessor);
 
+        public extern static D3NumberFormatter Format(string specifier);
+        [InlineCode("{$DefinitelySalt.D3}.format = {format}")]
+        public extern static void SetFormat(ID3NumberFormatConstructor format);
+
         public static extern D3Locale Locale(D3LocaleDefinition definition);
     }
 
+    public delegate string D3NumberFormatter(double value);
+
     [Imported]
+    public interface ID3NumberFormatConstructor { }
+
+    [Imported]
+    public interface ID3TimeFormatConstructor { }
+
+    [Imported]
+    [Serializable]
     public class D3Locale
     {
-        public object NumberFormat;
-        public object TimeFormat;
+        public ID3NumberFormatConstructor NumberFormat;
+        public ID3TimeFormatConstructor TimeFormat;
     }
 
     [Imported]
@@ -285,11 +298,20 @@ namespace DefinitelySalt
     [ScriptName("time")]
     public static class D3Time
     {
-        public static D3TimeFormat Format(string specifier) { return null; }
-        public static ID3TimeScale Scale() { return null; }
+        [Imported]
+        public interface IMultiFormats { }
+
+        public extern static D3TimeFormat Format(string specifier);
+        [InlineCode("{$DefinitelySalt.D3Time}.format = {format}")]
+        public extern static void SetFormat(ID3TimeFormatConstructor format);
+        [InlineCode("{$DefinitelySalt.D3Time}.format.multi({formats})")]
+        public extern static D3TimeFormat FormatMulti(IMultiFormats formats);
+
+        public extern static ID3TimeScale Scale();
         [InlineCode("{$DefinitelySalt.D3Time}.scale.utc()")]
-        public static ID3TimeScale ScaleUtc() { return null; }
+        public extern static ID3TimeScale ScaleUtc();
     }
+
 
     [Imported]
     [ScriptNamespace("d3.time")]
@@ -300,7 +322,8 @@ namespace DefinitelySalt
         public string Format(DateTime date) { return null; }
         public DateTime? Parse(string text) { return null; }
 
-        // TODO multi, utc, iso
+        [ScriptSkip]
+        public extern static implicit operator Func<DateTime, string>(D3TimeFormat format);
     }
 
     [Imported]
