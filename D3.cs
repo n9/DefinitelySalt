@@ -41,28 +41,55 @@ namespace DefinitelySalt
     [ScriptName("d3")]
     public static class D3
     {
-        public static ID3Selection<object> Select(string selector) { return null; }
-        public static ID3Selection<object> Select(XmlElement element) { return null; }
-        public static ID3Selection<object> SelectAll(string selector) { return null; }
-        public static ID3Selection<object> SelectAll(XmlElement[] element) { return null; }
-        public static ID3Selection<object> Selection() { return null; }
-        public static ID3Transition<object> Transition() { return null; }
+        public static extern ID3Selection<object> Select(string selector);
+        public static extern ID3Selection<object> Select(XmlElement element);
+        public static extern ID3Selection<object> SelectAll(string selector);
+        public static extern ID3Selection<object> SelectAll(XmlElement[] element);
+        public static extern ID3Selection<object> Selection();
+        public static extern ID3Transition<object> Transition();
 
         [IntrinsicProperty]
-        public static Event Event { get { return null; } }
-        public static ID3Point Mouse(XmlElement container) { return null; }
-        public static ID3Point[] Touches(XmlElement container) { return null; }
-        public static ID3Point[] Touches(XmlElement container, TouchList touches) { return null; }
+        public static extern Event Event { get; }
+        public static extern ID3Point Mouse(XmlElement container);
+        public static extern ID3Point[] Touches(XmlElement container);
+        public static extern ID3Point[] Touches(XmlElement container, TouchList touches);
 
-        public static T[] Extent<T>(T[] array) { return null; }
-        public static TO[] Extent<TI, TO>(TI[] array, Func<TI, TO> accessor) { return null; }
-        public static TO[] Extent<TI, TO>(TI[] array, Func<TI, int, TO> accessor) { return null; }
-        public static T Min<T>(T[] array) { return default(T); }
-        public static TO Min<TI, TO>(TI[] array, Func<TI, TO> accessor) { return default(TO); }
-        public static TO Min<TI, TO>(TI[] array, Func<TI, int, TO> accessor) { return default(TO); }
-        public static T Max<T>(T[] array) { return default(T); }
-        public static TO Max<TI, TO>(TI[] array, Func<TI, TO> accessor) { return default(TO); }
-        public static TO Max<TI, TO>(TI[] array, Func<TI, int, TO> accessor) { return default(TO); }
+        public static extern T[] Extent<T>(T[] array);
+        public static extern TO[] Extent<TI, TO>(TI[] array, Func<TI, TO> accessor);
+        public static extern TO[] Extent<TI, TO>(TI[] array, Func<TI, int, TO> accessor);
+        public static extern T Min<T>(T[] array);
+        public static extern TO Min<TI, TO>(TI[] array, Func<TI, TO> accessor);
+        public static extern TO Min<TI, TO>(TI[] array, Func<TI, int, TO> accessor);
+        public static extern T Max<T>(T[] array);
+        public static extern TO Max<TI, TO>(TI[] array, Func<TI, TO> accessor);
+        public static extern TO Max<TI, TO>(TI[] array, Func<TI, int, TO> accessor);
+
+        public static extern D3Locale Locale(D3LocaleDefinition definition);
+    }
+
+    [Imported]
+    public class D3Locale
+    {
+        public object NumberFormat;
+        public object TimeFormat;
+    }
+
+    [Imported]
+    [Serializable]
+    public class D3LocaleDefinition
+    {
+        public string Decimal;
+        public string Thousands;
+        public int[] Grouping;
+        public string[] Currency;
+        public string DateTime;
+        public string Date;
+        public string Time;
+        public string[] Periods;
+        public string[] Days;
+        public string[] ShortDays;
+        public string[] Months;
+        public string[] ShortMonths;
     }
 
     [Imported]
@@ -137,8 +164,7 @@ namespace DefinitelySalt
 
         [ScriptName("classed")]
         bool IsClassed(string name);
-        ID3Selection<TD> Classed(D3Source<TD, string> value);
-        ID3Selection<TD> Classed(D3Source<TD, bool> value);
+        ID3Selection<TD> Classed(D3Source<TD, string> name, D3Source<TD, bool> value);
         ID3Selection<TD> Classed(D3Source<TD, JsDictionary<string, bool>> value);
 
         [ScriptName("style")]
@@ -309,20 +335,36 @@ namespace DefinitelySalt
     public abstract class D3SvgAxis<TD> : ID3Function
     {
         [InlineCode("{this}({data})", GeneratedMethodName = "apply")]
-        public string Apply(ID3Selection data) { return null; }
+        public extern string Apply(ID3Selection data);
 
         [ScriptSkip]
-        public static implicit operator Action<ID3Selection<TD>>(D3SvgAxis<TD> area) { return null; }
+        public extern static implicit operator Action<ID3Selection<TD>>(D3SvgAxis<TD> area);
 
-        public D3SvgAxis<TD> Scale(ID3Scale<TD> scale) { return null; }
-        
         [ScriptName("scale")]
-        public ID3Scale<TD> GetScale() { return null; }
-
-        public D3SvgAxis<TD> Orient(D3SvgAxisOrient orient) { return null; }
+        public extern ID3Scale<TD> GetScale();
+        public extern D3SvgAxis<TD> Scale(ID3Scale<TD> scale);
 
         [ScriptName("orient")]
-        public D3SvgAxisOrient GetOrient() { return default(D3SvgAxisOrient); }
+        public extern D3SvgAxisOrient GetOrient();
+        public extern D3SvgAxis<TD> Orient(D3SvgAxisOrient orient);
+
+        [ScriptName("tickFormat")]
+        public extern Func<TD, string> GetTickFormat();
+        public extern D3SvgAxis<TD> TickFormat(Func<TD, string> value);
+
+        public extern D3SvgAxis<TD> TickSize(double inner, double outer);
+
+        [ScriptName("innerTickSize")]
+        public extern double GetInnerTickSize();
+        public extern D3SvgAxis<TD> InnerTickSize(double value);
+
+        [ScriptName("outerTickSize")]
+        public extern double GetOuterTickSize();
+        public extern D3SvgAxis<TD> OuterTickSize(double value);
+
+        [ScriptName("tickPadding")]
+        public extern double GetTickPadding();
+        public extern D3SvgAxis<TD> TickPadding(double value);
     }
 
     [Imported]
