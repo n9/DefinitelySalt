@@ -21,6 +21,9 @@ namespace DefinitelySalt
         public static extern ILeafletLatLngBounds LatLngBounds(ILeafletLatLng corner1, ILeafletLatLng corner2);
 
         public static extern ILeafletTileLayer TileLayer(string urlTemplate, LeafletTileLayerOptions options = null);
+        public static extern ILeafletPopup Popup(LeafletPopupOptions options = null, ILeafletLayer source = null);
+        public static extern ILeafletTooltip Popup(LeafletTooltipOptions options = null, ILeafletLayer source = null);
+
         public static extern ILeafletMarker Marker(ILeafletLatLng latLng, LeafletMarkerOptions options = null);
         public static extern ILeafletIcon Icon(LeafletIconOptions options);
         public static extern ILeafletDivIcon DivIcon(LeafletDivIconOptions options);
@@ -117,6 +120,47 @@ namespace DefinitelySalt
         T AddTo(ILeafletLayerContainer container);
         T RemoveFrom(ILeafletLayerContainer container);
         T Remove();
+
+        T BindPopup(TypeOption<string, HtmlElement, Func<ILeafletLayer, TypeOption<string, HtmlElement>>, ILeafletPopup> content, LeafletPopupOptions options = null);
+        T UnbindPopup();
+        T SetPopupContent(TypeOption<string, HtmlElement, Func<ILeafletLayer, TypeOption<string, HtmlElement>>> content);
+
+        T BindTooltip(TypeOption<string, HtmlElement, Func<ILeafletLayer, TypeOption<string, HtmlElement>>, ILeafletTooltip> content, LeafletTooltipOptions options = null);
+        T UnbindTooltip();
+        T SetTooltipContent(TypeOption<string, HtmlElement, Func<ILeafletLayer, TypeOption<string, HtmlElement>>> content);
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ILeafletDivOverlay<T> : ILeafletLayer<T>
+    {
+        T SetContent(TypeOption<string, HtmlElement, Func<ILeafletLayer, TypeOption<string, HtmlElement>>> content);
+    }
+
+    [Imported]
+    [Serializable]
+    public class LeafletPopupOptions
+    {
+
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ILeafletPopup : ILeafletDivOverlay<ILeafletPopup>
+    {
+    }
+
+    [Imported]
+    [Serializable]
+    public class LeafletTooltipOptions
+    {
+
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ILeafletTooltip : ILeafletDivOverlay<LeafletTooltipOptions>
+    {
     }
 
     [Imported]
@@ -150,7 +194,9 @@ namespace DefinitelySalt
     [IgnoreNamespace]
     public interface ILeafletMarker : ILeafletLayer<ILeafletMarker>
     {
-        
+        ILeafletMarker SetIcon(ILeafletIconBase icon);
+
+        HtmlElement GetElement();
     }
 
     [Imported]
@@ -186,6 +232,7 @@ namespace DefinitelySalt
     {
         public ILeafletPoint IconSize;
         public string Html;
+        public string ClassName;
     }
 
     [Imported]

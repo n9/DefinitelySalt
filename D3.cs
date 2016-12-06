@@ -69,6 +69,18 @@ namespace DefinitelySalt
         public extern static void SetFormat(ID3NumberFormatConstructor format);
 
         public static extern D3Locale Locale(D3LocaleDefinition definition);
+
+        public static extern ID3RgbColor Rgb(byte r, byte g, byte b);
+        public static extern ID3RgbColor Rgb(string text);
+
+        public static extern ID3HslColor Hsl(double h, double s, double l);
+        public static extern ID3HslColor Hsl(string text);
+
+        public static extern ID3HclColor Hcl(double h, double c, double l);
+        public static extern ID3HclColor Hcl(string text);
+
+        public static extern ID3LabColor Lab(double l, double a, double b);
+        public static extern ID3LabColor Lab(string text);
     }
 
     public delegate string D3NumberFormatter(double value);
@@ -419,4 +431,38 @@ namespace DefinitelySalt
         public D3SvgArea<TD> Y1(Func<TD, double> accessor) { return null; }
         public D3SvgArea<TD> Y1(Func<TD, int, double> accessor) { return null; }
     }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ID3ColorBase<T>
+    {
+        T Brighter(double k);
+        T Darker(double k);
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ID3NonRgbColorBase<T> : ID3ColorBase<T>
+    {
+        ID3RgbColor Rgb();
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ID3RgbColor : ID3ColorBase<ID3RgbColor>
+    {
+        ID3HslColor Hsl();
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ID3HslColor : ID3NonRgbColorBase<ID3HslColor> { }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ID3HclColor : ID3NonRgbColorBase<ID3HclColor> { }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ID3LabColor : ID3NonRgbColorBase<ID3LabColor> { }
 }
