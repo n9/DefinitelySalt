@@ -268,7 +268,10 @@ namespace DefinitelySalt
     [Serializable]
     public class LeafletMarkerClusterGroupOptions
     {
+        public bool ShowCoverageOnHover = true;
         public int MaxClusterRadius = 80;
+
+        public Func<ILeafletMarkerCluster, ILeafletIconBase> IconCreateFunction;
     }
 
     [Imported]
@@ -277,5 +280,13 @@ namespace DefinitelySalt
     {
         ILeafletMarkerClusterGroup AddLayers(List<ILeafletLayer> layers);
         ILeafletMarkerClusterGroup RemoveLayers(List<ILeafletLayer> layers);
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ILeafletMarkerCluster
+    {
+        List<ILeafletMarker> GetAllChildMarkers();
+        int GetChildCount();
     }
 }
