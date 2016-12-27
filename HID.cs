@@ -18,4 +18,28 @@ namespace DefinitelySalt
         public extern Hid(int vendorId, int productId);
         public extern void Close();
     }
+
+    [Imported]
+    [IgnoreNamespace]
+    [ScriptName(null)]
+    [ModuleName("node-hid")]
+    public static class HidModule
+    {
+        [ScriptName("devices")]
+        public extern static List<HidDevice> ListDevices();
+    }
+
+    [Imported]
+    [Serializable]
+    public class HidDevice
+    {
+        public int VendorId;
+        public int ProductId;
+        public string Path;
+        public string SerialNumber;
+        public string Manufacturer;
+        public string Product;
+        public int Release;
+        public int Interface;
+    }
 }
