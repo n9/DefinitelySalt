@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Framework.Core;
 using System.Runtime.CompilerServices;
 using System.Collections.TypedArrays;
 using NodeJS.EventsModule;
