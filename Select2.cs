@@ -46,12 +46,12 @@ namespace DefinitelySalt
     public class Select2AjaxBase<TData>
     {
         public Delegate Transport;
-        public TypeOption<string, Func<string>> Url;
+        public TypeOption<string, Func<string, int, string>> Url;
         public string DataType;
         public int? QuietMillis;
         public bool? Cache;
         public TypeOption<string, Func<string>> JsonpCallback;
-        public Func<string, int, object, JsDictionary<string, string>> Data;
+        public Func<string, int, Select2Query<TData>, JsDictionary<string, string>> Data;
         public TypeOption<JsDictionary<string, string>, Func<JsDictionary<string, string>>> Params;
     }
 
@@ -59,14 +59,14 @@ namespace DefinitelySalt
     [Imported]
     public class Select2Ajax<TData> : Select2AjaxBase<TData>
     {
-        public Func<TData[], int, object, Select2Result<TData>> Results;
+        public Func<TData[], int, Select2Query<TData>, Select2Result<TData>> Results;
     }
 
     [Serializable]
     [Imported]
     public class Select2Ajax<TData, TResult> : Select2AjaxBase<TResult>
     {
-        public Func<TData[], int, object, Select2Result<TResult>> Results;
+        public Func<TData[], int, Select2Query<TData>, Select2Result<TResult>> Results;
     }
 
     public delegate bool Select2Matcher(string term, string text, jQueryObject option);
