@@ -28,7 +28,28 @@ namespace DefinitelySalt
         public static extern ILeafletIcon Icon(LeafletIconOptions options);
         public static extern ILeafletDivIcon DivIcon(LeafletDivIconOptions options);
 
+        public static extern ILeafletCircle Circle(ILeafletLatLng latLng, LeafletCircleOptions options = null);
+
         public static extern ILeafletMarkerClusterGroup MarkerClusterGroup(LeafletMarkerClusterGroupOptions options);
+
+        [ScriptName("geoJSON")]
+        public static extern ILeafletGeoJson GeoJson();
+
+        [ScriptName("geoJSON")]
+        public static extern ILeafletGeoJson GeoJson(object geoJson);
+    }
+
+    [Imported]
+    [NamedValues]
+    public enum LeafletPaneNames
+    {
+        MapPane, // auto - Pane that contains all other map panes
+        TilePane, // 200 - Pane for GridLayers and TileLayers
+        OverlayPane, // 400 - Pane for vectors (Paths, like Polylines and Polygons), ImageOverlays and VideoOverlays
+        ShadowPane, // 500 - Pane for overlay shadows (e.g. Marker shadows)
+        MarkerPane, // 600 - Pane for Icons of Markers
+        TooltipPane, // 650 - Pane for Tooltips.
+        PopupPane, // 700 - Pane for Popups.
     }
 
     [Imported]
@@ -107,6 +128,13 @@ namespace DefinitelySalt
     }
 
     [Imported]
+    [Serializable]
+    public class LeafletLayerOptions
+    {
+        public TypeOption<LeafletPaneNames, string> Pane;
+    }
+
+    [Imported]
     [IgnoreNamespace]
     public interface ILeafletLayer
     {
@@ -128,6 +156,13 @@ namespace DefinitelySalt
         T BindTooltip(TypeOption<string, HtmlElement, Func<ILeafletLayer, TypeOption<string, HtmlElement>>, ILeafletTooltip> content, LeafletTooltipOptions options = null);
         T UnbindTooltip();
         T SetTooltipContent(TypeOption<string, HtmlElement, Func<ILeafletLayer, TypeOption<string, HtmlElement>>> content);
+    }
+
+    [Imported]
+    [Serializable]
+    public class LeafletInterfactiveLayerOptions : LeafletLayerOptions
+    {
+        public bool? Interactive;
     }
 
     [Imported]
@@ -231,6 +266,7 @@ namespace DefinitelySalt
     public class LeafletDivIconOptions
     {
         public ILeafletPoint IconSize;
+        public ILeafletPoint IconAnchor;
         public string Html;
         public string ClassName;
     }
@@ -238,6 +274,43 @@ namespace DefinitelySalt
     [Imported]
     [IgnoreNamespace]
     public interface ILeafletDivIcon : ILeafletIconBase<ILeafletDivIcon>
+    {
+
+    }
+
+    [Imported]
+    [Serializable]
+    public class LeafletPathOptions : LeafletInterfactiveLayerOptions
+    {
+        public bool? Stroke;
+        public string Color;
+        public double? Width;
+        public double? Opacity;
+        public bool? Fill;
+        public string FillColor;
+        public double? FillOpacity;
+        // TODO
+        public string ClassName;
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ILeafletPath<T, TOptions> : ILeafletLayer<T>
+        where TOptions : LeafletPathOptions
+    {
+        T SetStyle(TOptions options);
+    }
+
+    [Imported]
+    [Serializable]
+    public class LeafletCircleOptions : LeafletPathOptions
+    {
+        public double Radius;
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ILeafletCircle : ILeafletPath<ILeafletCircle, LeafletCircleOptions>
     {
 
     }
@@ -288,5 +361,12 @@ namespace DefinitelySalt
     {
         List<ILeafletMarker> GetAllChildMarkers();
         int GetChildCount();
+    }
+
+    [Imported]
+    [IgnoreNamespace]
+    public interface ILeafletGeoJson : ILeafletLayer<ILeafletGeoJson>
+    {
+        ILeafletGeoJson AddData(object geoJson);
     }
 }
