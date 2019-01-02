@@ -33,10 +33,7 @@ namespace DefinitelySalt
         public static extern ILeafletMarkerClusterGroup MarkerClusterGroup(LeafletMarkerClusterGroupOptions options);
 
         [ScriptName("geoJSON")]
-        public static extern ILeafletGeoJson GeoJson();
-
-        [ScriptName("geoJSON")]
-        public static extern ILeafletGeoJson GeoJson(object geoJson);
+        public static extern ILeafletGeoJson GeoJson(object geoJson = null, LeafletGeoJsonOptions options = null);
     }
 
     [Imported]
@@ -118,6 +115,7 @@ namespace DefinitelySalt
     public interface ILeafletMap : ILeafletLayerContainer<ILeafletMap>
     {
         ILeafletMap Remove();
+        HtmlElement CreatePane(string name, HtmlElement container = null);
     }
 
     [Imported]
@@ -364,8 +362,54 @@ namespace DefinitelySalt
     }
 
     [Imported]
+    [Serializable]
+    public class GeoJsonFeature
+    {
+        public TypeOption<GeoJsonFeatureTypes, string> Type;
+        public JsDictionary<string, object> Properties;
+        public GeoJsonGeometry Geometry;
+    }
+
+    [Imported]
+    [NamedValues]
+    [PreserveMemberCase]
+    public enum GeoJsonFeatureTypes
+    {
+        Feature,
+    }
+
+    [Imported]
+    [Serializable]
+    public class GeoJsonGeometry
+    {
+        public TypeOption<GeoJsonGeometryTypes, string> Type;
+    }
+
+    [Imported]
+    [NamedValues]
+    [PreserveMemberCase]
+    public enum GeoJsonGeometryTypes
+    {
+        MultiLineString,
+        MultiPolygon,
+    }
+
+    public delegate ILeafletLayer LeafletGeoJsonPointToLayer(GeoJsonFeature geoJsonPoint, ILeafletLatLng latLng);
+    public delegate LeafletPathOptions LeafletGeoJsonStyle(GeoJsonFeature geoJsonFeature);
+    public delegate void LeafletGeoJsonOnEachFeature(GeoJsonFeature geoJsonFeature);
+
+    [Imported]
+    [Serializable]
+    public class LeafletGeoJsonOptions : LeafletLayerOptions
+    {
+        public LeafletGeoJsonPointToLayer PointToLayer;
+        public LeafletGeoJsonStyle Style;
+        public LeafletGeoJsonOnEachFeature OnEachFeature;
+    }
+
+    [Imported]
     [IgnoreNamespace]
-    public interface ILeafletGeoJson : ILeafletLayer<ILeafletGeoJson>
+    public interface ILeafletGeoJson : ILeafletFeatureGroup<ILeafletGeoJson>
     {
         ILeafletGeoJson AddData(object geoJson);
     }
