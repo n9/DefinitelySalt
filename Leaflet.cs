@@ -77,6 +77,7 @@ namespace DefinitelySalt
         public double MinZoom;
         public double MaxZoom;
         public List<ILeafletLayer> Layers;
+        public ILeafletLatLngBounds MaxBounds;
     }
 
     [Imported]
@@ -218,7 +219,7 @@ namespace DefinitelySalt
 
     [Imported]
     [Serializable]
-    public class LeafletMarkerOptions
+    public class LeafletMarkerOptions : LeafletInterfactiveLayerOptions
     {
         public ILeafletIconBase Icon;
     }
